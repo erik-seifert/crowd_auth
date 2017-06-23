@@ -1,0 +1,7 @@
+name: crowd_auth
+type: module
+description: Atlassian Crowd Authentication Provider
+core: 8.x
+package: crowd
+dependencies:
+  - authorization

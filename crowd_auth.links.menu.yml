@@ -1,0 +1,5 @@
+entity.crowd_server.collection:
+  title: 'Crowd Servers'
+  route_name: entity.crowd_server.collection
+  description: 'List Crowd Servers'
+  parent: user.admin_index

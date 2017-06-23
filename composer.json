@@ -1,0 +1,16 @@
+{
+  "name": "drupal/crowd_auth",
+  "type": "drupal-module",
+  "description": "Atlassian Crowd Authentication Provider",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/crowd_auth",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/crowd_auth",
+    "source": "http://cgit.drupalcode.org/crowd_auth"
+  },
+  "require": { 
+    "bconnect/crowd-guzzle-service": "dev-master"
+  }
+}

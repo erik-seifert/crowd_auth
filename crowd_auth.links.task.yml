@@ -1,0 +1,6 @@
+
+entity.crowd_server.collection:
+  route_name: entity.crowd_server.collection
+  title: 'Servers'
+  weight: 20
+  base_route: entity.crowd_server.collection

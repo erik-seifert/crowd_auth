@@ -1,0 +1,30 @@
+crowd_auth.server.*:
+  type: config_entity
+  label: 'Server config'
+  mapping:
+    id:
+      type: string
+      label: 'Machine name for this server configuration'
+    label:
+      type: label
+      label: 'Name'
+    uuid:
+      type: string
+    status:
+      type: boolean
+      label: 'Enabled'
+    address:
+      type: string
+      label: 'Crowd Server address'
+    app_login:
+      type: string
+      label: 'Crowd application login'
+    app_pass:
+      type: string
+      label: 'Crowd application password'
+    port:
+      type: integer
+      label: 'Crowd Server port'
+    weight:
+      type: integer
+      label: 'Weight'

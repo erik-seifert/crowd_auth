@@ -1,0 +1,3 @@
+services:
+  crowd.servers:
+    class: Drupal\crowd_auth\ServerFactory

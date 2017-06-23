@@ -1,0 +1,51 @@
+# Server routing definition
+entity.crowd_server.collection:
+  path: '/admin/config/people/crowd'
+  defaults:
+    _entity_list: 'crowd_server'
+    _title: '2. Servers'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+entity.crowd_server.add_form:
+  path: '/admin/config/people/crowd/server/add'
+  defaults:
+    _entity_form: 'crowd_server.add'
+    _title: 'Add Server'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+entity.crowd_server.edit_form:
+  path: '/admin/config/people/crowd/server/{crowd_server}'
+  defaults:
+    _entity_form: 'crowd_server.edit'
+    _title: 'Edit Server'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+entity.crowd_server.delete_form:
+  path: '/admin/config/people/crowd/server/{crowd_server}/delete'
+  defaults:
+    _entity_form: 'crowd_server.delete'
+    _title: 'Delete Server'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+
+entity.crowd_server.enable_disable_form:
+  path: '/admin/config/people/crowd/server/{crowd_server}/enable_disable'
+  defaults:
+    _entity_form: 'crowd_server.enable_disable'
+    _title: 'Enable/Disable Crowd Server'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE

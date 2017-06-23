@@ -1,0 +1,7 @@
+# All action links for this module
+
+entity.crowd_server.add_form:
+  route_name: 'entity.crowd_server.add_form'
+  title: 'Add Server'
+  appears_on:
+    - entity.crowd_server.collection

@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains crowd_auth.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function crowd_auth_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the crowd_auth module.
+    case 'help.page.crowd_auth':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Atlassian Crowd Authentication Provider') . '</p>';
+      return $output;
+
+    default:
+  }
+}
