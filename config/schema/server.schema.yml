@@ -22,9 +22,6 @@ crowd_auth.server.*:
     app_pass:
       type: string
       label: 'Crowd application password'
-    port:
-      type: integer
-      label: 'Crowd Server port'
     weight:
       type: integer
       label: 'Weight'

@@ -6,6 +6,9 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\crowd_auth\Entity\Server;
+
+define('CROWD_AUTH_PROVIDER', 'crowd_auth');
 
 /**
  * Implements hook_help().
@@ -21,4 +24,52 @@ function crowd_auth_help($route_name, RouteMatchInterface $route_match) {
 
     default:
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter(). for user_login_form.
+ */
+function crowd_auth_form_user_login_form_alter(&$form, $form_state, $form_id) {
+  _crowd_auth_form_user_login_alter($form, $form_state, 'user_login');
+
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter(). for user_login_block.
+ */
+function crowd_auth_form_user_login_block_alter(&$form, &$form_state) {
+  _crowd_auth_form_user_login_alter($form, $form_state, 'user_login_block');
+
+}
+
+
+function _crowd_auth_form_user_login_alter(&$form, &$form_state, $form_id) {
+  if (count(\Drupal::service('crowd.servers')->getEnabledServers()) > 0) {
+    $key = array_search('::validateAuthentication', $form['#validate']);
+    $form['#validate'][$key] = 'crowd_auth_core_override_user_login_authenticate_validate';
+    array_splice($form['#validate'], $key + 1, 0, 'crowd_auth_user_login_authenticate_validate');
+  }
+}
+
+function crowd_auth_core_override_user_login_authenticate_validate($form, &$form_state) {
+
+  $servers = \Drupal::service('crowd.servers')->getEnabledServers();
+
+  foreach ($servers as $server) {
+    if ($server->connect()) {
+      $result = $server->registerAndLogin($form_state->getValue('name'), $form_state->getValue('pass'));
+    }
+  }
+
+  if (!empty($form_state->get('uid'))) {
+    return;
+  }
+
+  $original_form = $form_state->getFormObject();
+  $original_form->validateAuthentication($form, $form_state);
+
+}
+
+function crowd_auth_user_login_authenticate_validate() {
+
 }

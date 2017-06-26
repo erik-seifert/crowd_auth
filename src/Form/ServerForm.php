@@ -61,17 +61,7 @@ class ServerForm extends EntityForm {
       '#maxlength' => 255,
       '#default_value' => $server->get('address') ? $server->get('address') : '127.0.0.1',
       '#description' => $this->t("The domain name or IP address of your Crowd Server such as \"ad.unm.edu\".<br>For SSL use the form https://DOMAIN such as \"https://ad.unm.edu\""),
-      '#required' => TRUE,
-      '#default' => '127.0.0.1',
-    ];
-
-    $form['server']['port'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Server port'),
-      '#maxlength' => 11,
-      '#default_value' => $server->get('port') ? $server->get('port') : 8095,
-      '#description' => $this->t("The TCP/IP port on the above server which accepts Crowd connections. Must be an integer."),
-      '#required' => TRUE,
+      '#required' => 'http://127.0.0.1:8095',
     ];
 
     $form['server']['app_login'] = [

@@ -38,6 +38,70 @@ class CrowdAuthorizationProvider  extends ProviderPluginBase {
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
     ];
+
+    $factory = \Drupal::service('crowd.servers');
+    $servers = $factory->getEnabledServers();
+
+    if (count($servers) == 0) {
+      $form['status']['server'] = [
+        '#type' => 'markup',
+        '#markup' => t('<strong>Warning</strong>: You must create an LDAP Server first.'),
+      ];
+      drupal_set_message(t('You must create an LDAP Server first.'), 'warning');
+    }
+    else {
+      $server_options = [];
+      foreach ($servers as $id => $server) {
+        /** @var \Drupal\ldap_servers\Entity\Server $server */
+        $server_options[$id] = $server->label() . ' (' . $server->get('address') . ')';
+      }
+    }
+
+    $provider_config = $profile->getProviderConfig();
+
+    if (!empty($server_options)) {
+      if (isset($provider_config['status'])) {
+        $default_server = $provider_config['status']['server'];
+      }
+      elseif (count($server_options) == 1) {
+        $default_server = key($server_options);
+      }
+      else {
+        $default_server = '';
+      }
+      $form['status']['server'] = [
+        '#type' => 'radios',
+        '#title' => t('LDAP Server used in @profile_name configuration.', $tokens),
+        '#required' => 1,
+        '#default_value' => $default_server,
+        '#options' => $server_options,
+      ];
+    }
+
     return $form;
+  }
+
+  /**
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @param int $index
+   * @return array
+   */
+  public function buildRowForm(array $form, FormStateInterface $form_state, $index = 0) {
+    $row = [];
+    /** @var \Drupal\authorization\Entity\AuthorizationProfile $this->configuration['profile'] */
+    $mappings = $this->configuration['profile']->getProviderMappings();
+    $row['query'] = [
+      '#type' => 'textfield',
+      '#title' => t('LDAP query'),
+      '#default_value' => isset($mappings[$index]) ? $mappings[$index]['query'] : NULL,
+    ];
+    $row['is_regex'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Is this query a regular expression?'),
+      '#default_value' => isset($mappings[$index]) ? $mappings[$index]['is_regex'] : NULL,
+    ];
+
+    return $row;
   }
 }
