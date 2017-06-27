@@ -7,6 +7,7 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\crowd_auth\Entity\Server;
+use Drupal\user\Entity\User;
 
 define('CROWD_AUTH_PROVIDER', 'crowd_auth');
 

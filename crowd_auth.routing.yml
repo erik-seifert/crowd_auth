@@ -29,6 +29,16 @@ entity.crowd_server.edit_form:
   options:
     _admin_route: TRUE
 
+entity.crowd_server.mapping_form:
+  path: '/admin/config/people/crowd/server/{crowd_server}/mapping'
+  defaults:
+    _entity_form: 'crowd_server.mapping'
+    _title: 'Edit Server'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
 entity.crowd_server.delete_form:
   path: '/admin/config/people/crowd/server/{crowd_server}/delete'
   defaults:

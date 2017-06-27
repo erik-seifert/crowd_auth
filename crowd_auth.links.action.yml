@@ -1,5 +1,3 @@
-# All action links for this module
-
 entity.crowd_server.add_form:
   route_name: 'entity.crowd_server.add_form'
   title: 'Add Server'

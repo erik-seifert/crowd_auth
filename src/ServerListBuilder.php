@@ -6,6 +6,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\crowd_auth\Entity\Server;
+use Drupal\crowd_auth\CrowdUserException;
 
 /**
  * Provides a listing of Server entities.
@@ -47,9 +48,13 @@ class ServerListBuilder extends ConfigEntityListBuilder {
    */
   private function checkStatus($server_id) {
     $server = Server::load($server_id);
-    //$connection_result = $server->connect();
     if ($server->get('status')) {
-      return 1;
+      try {
+        $server->ping();
+      } catch (CrowdUserException $ex) {
+        return $ex->getMessage();
+      }
+      return $this->t('Yes');
     }
     return 0;
   }
@@ -59,13 +64,11 @@ class ServerListBuilder extends ConfigEntityListBuilder {
    */
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getDefaultOperations($entity);
-    // if (!isset($operations['test'])) {
-    //   $operations['test'] = [
-    //     'title' => $this->t('Test'),
-    //     'weight' => 10,
-    //     'url' => Url::fromRoute('entity.crowd_server.test_form', ['crowd_server' => $entity->id()]),
-    //   ];
-    // }
+    $operations['mapping'] = [
+      'title' => $this->t('Mapping'),
+      'weight' => 10,
+      'url' => Url::fromRoute('entity.crowd_server.mapping_form', ['crowd_server' => $entity->id()]),
+    ];
     if ($entity->get('status') == 1) {
       $operations['disable'] = [
         'title' => $this->t('Disable'),

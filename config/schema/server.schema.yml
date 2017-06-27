@@ -22,6 +22,23 @@ crowd_auth.server.*:
     app_pass:
       type: string
       label: 'Crowd application password'
+    admin_login:
+      type: string
+      label: 'Administrator login'
+    admin_pass:
+      type: string
+      label: 'Administrator password'
     weight:
       type: integer
       label: 'Weight'
+    group_mapping:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          group_remote:
+            type: string
+            label: 'Crowd group'
+          group_drupal:
+            type: string
+            label: 'Drupal group'

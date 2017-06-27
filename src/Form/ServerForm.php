@@ -18,7 +18,6 @@ class ServerForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-    dsm($this->entity);
     $server = $this->entity;
 
     $form['server'] = [
@@ -82,8 +81,23 @@ class ServerForm extends EntityForm {
       '#default' => 'shaque',
     ];
 
+    $form['server']['admin_login'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Administrator login'),
+      '#maxlength' => 255,
+      '#default_value' => ($server->get('admin_login')) ? $server->get('admin_login') : 'admin',
+      '#required' => TRUE,
+      '#default' => 'shaque',
+    ];
 
-
+    $form['server']['admin_pass'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Administrator password'),
+      '#maxlength' => 255,
+      '#default_value' => ($server->get('admin_pass')) ? $server->get('admin_pass') : 'admin',
+      '#required' => TRUE,
+      '#default' => 'shaque',
+    ];
     return $form;
   }
 
@@ -95,7 +109,7 @@ class ServerForm extends EntityForm {
     try {
       $status = $this->entity->save();
     } catch (Exception $ex) {
-      dsm($ex->getMessage());
+      drupal_set_message($ex->getMessage());
     }
     
 
