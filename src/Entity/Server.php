@@ -58,19 +58,14 @@ class Server extends ConfigEntityBase {
      * @return boolean;
      */
     public function connect() {
-        try {
-            $this->client = CrowdClient::create([
-                'user' => $this->get('app_login'),
-                'pass' => $this->get('app_pass'),
-                'cookies' => true,
-                'http_errors' => false,
-                'debug' => false,
-                'base_uri' => $this->get('address') .'/'
-            ]);
-            return true;
-        } catch (CommandException $e) {
-            throw CrowdUserException::getInstance($e);
-        }
+        $this->client = CrowdClient::create([
+            'user' => $this->get('app_login'),
+            'pass' => $this->get('app_pass'),
+            'cookies' => true,
+            'http_errors' => false,
+            'debug' => false,
+            'base_uri' => $this->get('address') .'/'
+        ]);
     }
 
     public function ping() {
@@ -205,10 +200,20 @@ class Server extends ConfigEntityBase {
 
         foreach ($groups['groups'] as $group) {
             if ($role = $this->getMappingForGroup($group['name'])) {
-                $account->addRole($role);
+                $account->addRole($role->id());
             }
         }
+        
         $account->save();
+        try {
+            $result = $this->getUser($username);
+            if ($result['active'] != 1) {
+                $user->block();
+                return false;
+            }
+        } catch (Exception $ex) {
+            return false;
+        }
         $authService->login($username, CROWD_AUTH_PROVIDER);
         return $account;    
     }

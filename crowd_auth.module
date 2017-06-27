@@ -53,24 +53,25 @@ function _crowd_auth_form_user_login_alter(&$form, &$form_state, $form_id) {
 }
 
 function crowd_auth_core_override_user_login_authenticate_validate($form, &$form_state) {
-
-  $servers = \Drupal::service('crowd.servers')->getEnabledServers();
-
-  foreach ($servers as $server) {
-    if ($server->connect()) {
-      $result = $server->registerAndLogin($form_state->getValue('name'), $form_state->getValue('pass'));
-    }
-  }
-
   if (!empty($form_state->get('uid'))) {
     return;
   }
 
   $original_form = $form_state->getFormObject();
   $original_form->validateAuthentication($form, $form_state);
-
 }
 
-function crowd_auth_user_login_authenticate_validate() {
+function crowd_auth_user_login_authenticate_validate($form, &$form_state) {
+  $servers = \Drupal::service('crowd.servers')->getEnabledServers();
+
+  foreach ($servers as $server) {
+    if ($server->connect()) {
+      $result = $server->registerAndLogin($form_state->getValue('name'), $form_state->getValue('pass'));
+      if (is_object($result)) {
+        $form_state->set('uid', $result->id());
+      }
+    }
+  }
+
 
 }
