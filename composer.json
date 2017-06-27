@@ -9,8 +9,5 @@
   "support": {
     "issues": "https://www.drupal.org/project/issues/crowd_auth",
     "source": "http://cgit.drupalcode.org/crowd_auth"
-  },
-  "require": { 
-    "bconnect/crowd-guzzle-service": "dev-master"
   }
 }

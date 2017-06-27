@@ -3,7 +3,6 @@
 namespace Drupal\crowd_auth\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use bconnect\crowd\api\CrowdClient;
 use GuzzleHttp\Command\Exception\CommandException;
 use GuzzleHttp\Command\Exception\CommandClientException;
 use Drupal\crowd_auth\CrowdUserException;
@@ -58,14 +57,8 @@ class Server extends ConfigEntityBase {
      * @return boolean;
      */
     public function connect() {
-        $this->client = CrowdClient::create([
-            'user' => $this->get('app_login'),
-            'pass' => $this->get('app_pass'),
-            'cookies' => true,
-            'http_errors' => false,
-            'debug' => false,
-            'base_uri' => $this->get('address') .'/'
-        ]);
+        $this->client = \Drupal::service('crowd.client')->get($this, ['debug' => true]);
+        return true;
     }
 
     public function ping() {
@@ -79,11 +72,7 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function getUsers() {
-        try {
-            return $this->client->getUser(['username' => 'admin']);
-        } catch (CommandException $e) {
-            throw CrowdUserException::getInstance($e);
-        }
+        return $this->client->getUser(['username' => 'admin']);
     }
 
     /**
@@ -92,14 +81,10 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function getGroups($expand = false) {
-        try {
-          if ($expand) {
-            return $this->client->search(['entity-type' => 'group', 'expand' => 'group']);
-          }
-          return $this->client->search(['entity-type' => 'group']);
-        } catch (CommandException $e) {
-            throw CrowdGroupException::getInstance($e);
+        if ($expand) {
+        return $this->client->search(['entity-type' => 'group', 'expand' => 'group']);
         }
+        return $this->client->search(['entity-type' => 'group']);
     }
 
     /**
@@ -110,27 +95,11 @@ class Server extends ConfigEntityBase {
      * @return array
      */
     public function getUser($username, $expand = false) {
-        try {
-            $params = ['username' => $username];
-            if ($expand) {
-                $params['expand'] = 'fields';
-            }
-            return $this->client->getUser($params);
-        } catch (CommandException $e) {
-            throw CrowdUserException::getInstance($e);
-        }
+        return $this->client->getUser($username, $expand);
     }
 
     public function getUserGroups($username, $expand = false) {
-        try {
-            $params = ['username' => $username];
-            if ($expand) {
-                $params['expand'] = 'group';
-            }
-            return $this->client->getUserDirectGroups($params);
-        } catch (CommandException $e) {
-            throw CrowdUserException::getInstance($e);
-        }
+        return $this->client->getDirectGroups($username, $expand);
     }
 
     public function getMappingForGroup($remoteGroup) {
@@ -151,15 +120,7 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function authentication($username, $password) {
-        try {
-            $result = $this->client->authentication([
-                'username' => $username,
-                'password' => $password
-            ]);
-            return $result;
-        } catch (CommandException $e) {
-            throw CrowdUserException::getInstance($e);
-        }
+        return $this->client->authentication($username, $password);
     }
 
     /**
@@ -170,13 +131,10 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function registerAndLogin($username, $password) {
-        try {
-            $result = $this->authentication($username, $password);
-        } catch (CrowdUserException $e) {
-            return false;
-        }
+        $result = $this->authentication($username, $password);
+
         $authService = \Drupal::service('externalauth.externalauth');
-        if (!is_object($result)) {
+        if (!is_array($result)) {
             return $result;
         }
 
@@ -196,7 +154,9 @@ class Server extends ConfigEntityBase {
         if (!$account) {
             return false;
         }
+
         $groups = $this->getUserGroups($username);
+
 
         foreach ($groups['groups'] as $group) {
             if ($role = $this->getMappingForGroup($group['name'])) {
@@ -205,13 +165,10 @@ class Server extends ConfigEntityBase {
         }
 
         $account->save();
-        try {
-            $result = $this->getUser($username);
-            if ($result['active'] != 1) {
-                $user->block();
-                return false;
-            }
-        } catch (Exception $ex) {
+
+        $result = $this->getUser($username);
+        if ($result['active'] != 1) {
+            $user->block();
             return false;
         }
         $authService->login($username, CROWD_AUTH_PROVIDER);

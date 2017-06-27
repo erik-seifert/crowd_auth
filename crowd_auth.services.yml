@@ -1,3 +1,6 @@
 services:
   crowd.servers:
     class: Drupal\crowd_auth\ServerFactory
+  crowd.client:
+    class: Drupal\crowd_auth\CrowdClientFactory
+    arguments: ['@logger.factory']

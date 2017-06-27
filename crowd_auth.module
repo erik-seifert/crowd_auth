@@ -8,6 +8,7 @@
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\crowd_auth\Entity\Server;
 use Drupal\user\Entity\User;
+use Drupal\crowd_auth\CrowdUserException;
 
 define('CROWD_AUTH_PROVIDER', 'crowd_auth');
 
@@ -56,7 +57,6 @@ function crowd_auth_core_override_user_login_authenticate_validate($form, &$form
   if (!empty($form_state->get('uid'))) {
     return;
   }
-
   $original_form = $form_state->getFormObject();
   $original_form->validateAuthentication($form, $form_state);
 }
@@ -66,12 +66,14 @@ function crowd_auth_user_login_authenticate_validate($form, &$form_state) {
 
   foreach ($servers as $server) {
     if ($server->connect()) {
-      $result = $server->registerAndLogin($form_state->getValue('name'), $form_state->getValue('pass'));
-      if (is_object($result)) {
-        $form_state->set('uid', $result->id());
+      try {
+        $result = $server->registerAndLogin($form_state->getValue('name'), $form_state->getValue('pass'));
+        if (is_object($result)) {
+          $form_state->set('uid', $result->id());
+        }
+      } catch (CrowdUserException $ex) {
+        return;
       }
     }
   }
-
-
 }
