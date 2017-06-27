@@ -26,7 +26,8 @@ class MappingForm extends EntityForm {
     }
     try {
         $groups = $server->getGroups(true);
-    } catch (CrowdUserException $e) {
+    } catch (CrowdGroupException $e) {
+        dsm($e->getMessage(),'Here');
         $form['disabled'] = [
             '#markup' => t('Could not retrieve groups')
         ];

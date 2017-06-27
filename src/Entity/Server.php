@@ -57,7 +57,7 @@ class Server extends ConfigEntityBase {
      * @return boolean;
      */
     public function connect() {
-        $this->client = \Drupal::service('crowd.client')->get($this, ['debug' => true]);
+        $this->client = \Drupal::service('crowd.client')->get($this, ['debug' => false]);
         return true;
     }
 
@@ -81,10 +81,7 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function getGroups($expand = false) {
-        if ($expand) {
-        return $this->client->search(['entity-type' => 'group', 'expand' => 'group']);
-        }
-        return $this->client->search(['entity-type' => 'group']);
+        return $this->client->search('group');
     }
 
     /**

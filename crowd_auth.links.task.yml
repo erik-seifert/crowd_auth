@@ -3,3 +3,15 @@ entity.crowd_server.collection:
   title: 'Servers'
   weight: 20
   base_route: entity.crowd_server.collection
+
+entity.crowd_server.edit_form:
+  route_name: entity.crowd_server.edit_form
+  title: 'Add a server'
+  weight: 20
+  base_route: entity.crowd_server.edit_form
+
+entity.crowd_server.mapping_form:
+  route_name: entity.crowd_server.mapping_form
+  title: 'Edit Mappings'
+  weight: 20
+  base_route: entity.crowd_server.edit_form

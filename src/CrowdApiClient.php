@@ -7,6 +7,7 @@ use GuzzleHttp\Exception;
 use Drupal\crowd_auth\CrowdUserException;
 use Drupal\crowd_auth\CrowdGroupException;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\ConnectException;
 
 
 class CrowdApiClient extends Client {
@@ -22,7 +23,11 @@ class CrowdApiClient extends Client {
         if ($expand) {
             $query['query']['expand'] = 'attributes';
         }
-        $response = $this->get($this->getRequestUrl('usermanagement','user'), $query);
+        try {
+            $response = $this->get($this->getRequestUrl('usermanagement','user'), $query);
+        } catch (ConnectException $e) {
+            throw new CrowdUserException(404);
+        }
         if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
             return $this->getEncodedJson($response);
         }
@@ -47,7 +52,28 @@ class CrowdApiClient extends Client {
                 'value' => $password
             ]
         ];
-        $response = $this->post($this->getRequestUrl('usermanagement', 'authentication'), $query);
+        try {
+            $response = $this->post($this->getRequestUrl('usermanagement', 'authentication'), $query);
+        } catch (ConnectException $e) {
+            throw new CrowdUserException(404);
+        }
+        if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
+            return $this->getEncodedJson($response);
+        }
+        throw new CrowdUserException($response->getStatusCode());
+    }
+
+    function search($type) {
+        $query = [
+            'query' => [
+                'entity-type' => $type
+            ]
+        ];
+        try {
+            $response = $this->get($this->getRequestUrl('usermanagement', 'search'), $query);
+        } catch (ConnectException $e) {            
+            throw new CrowdUserException(404);
+        }
         if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
             return $this->getEncodedJson($response);
         }
@@ -63,7 +89,11 @@ class CrowdApiClient extends Client {
         if ($expand) {
             $query['query']['expand'] = 'group';
         }
-        $response = $this->get($this->getRequestUrl('usermanagement','user/group/direct'),$query);
+        try {
+            $response = $this->get($this->getRequestUrl('usermanagement','user/group/direct'),$query);
+        } catch (ConnectException $e) {
+            throw new CrowdUserException(404);
+        }
         if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
             return $this->getEncodedJson($response);
         }
