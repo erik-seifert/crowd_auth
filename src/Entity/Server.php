@@ -72,14 +72,14 @@ class Server extends ConfigEntityBase {
         $this->connect();
         $this->authentication($this->get('admin_login'), $this->get('admin_pass'));
     }
-    
+
     /**
      * getUsers
      *
      * @return void
      */
-    public function getUsers() {        
-        try { 
+    public function getUsers() {
+        try {
             return $this->client->getUser(['username' => 'admin']);
         } catch (CommandException $e) {
             throw CrowdUserException::getInstance($e);
@@ -92,9 +92,9 @@ class Server extends ConfigEntityBase {
      * @return void
      */
     public function getGroups($expand = false) {
-        try { 
+        try {
           if ($expand) {
-            return $this->client->search(['entity-type' => 'group', 'expand' => 'group']);    
+            return $this->client->search(['entity-type' => 'group', 'expand' => 'group']);
           }
           return $this->client->search(['entity-type' => 'group']);
         } catch (CommandException $e) {
@@ -118,7 +118,7 @@ class Server extends ConfigEntityBase {
             return $this->client->getUser($params);
         } catch (CommandException $e) {
             throw CrowdUserException::getInstance($e);
-        }  
+        }
     }
 
     public function getUserGroups($username, $expand = false) {
@@ -130,7 +130,7 @@ class Server extends ConfigEntityBase {
             return $this->client->getUserDirectGroups($params);
         } catch (CommandException $e) {
             throw CrowdUserException::getInstance($e);
-        }  
+        }
     }
 
     public function getMappingForGroup($remoteGroup) {
@@ -203,7 +203,7 @@ class Server extends ConfigEntityBase {
                 $account->addRole($role->id());
             }
         }
-        
+
         $account->save();
         try {
             $result = $this->getUser($username);
@@ -215,7 +215,7 @@ class Server extends ConfigEntityBase {
             return false;
         }
         $authService->login($username, CROWD_AUTH_PROVIDER);
-        return $account;    
+        return $account;
     }
 
 }
