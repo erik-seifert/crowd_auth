@@ -28,6 +28,9 @@ crowd_auth.server.*:
     admin_pass:
       type: string
       label: 'Administrator password'
+    crowd_cookie_name:
+      type: string
+      label: 'Crowd cookie name'
     weight:
       type: integer
       label: 'Weight'

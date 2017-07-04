@@ -98,6 +98,15 @@ class ServerForm extends EntityForm {
       '#required' => TRUE,
       '#default' => 'shaque',
     ];
+
+    $form['server']['crowd_cookie_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Crowd cookie name'),
+      '#maxlength' => 255,
+      '#default_value' => ($server->get('crowd_cookie_name')) ? $server->get('crowd_cookie_name') : 'crowd.token_key',
+      '#required' => TRUE,
+      '#default' => 'shaque',
+    ];
     return $form;
   }
 

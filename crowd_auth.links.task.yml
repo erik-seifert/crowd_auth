@@ -6,7 +6,7 @@ entity.crowd_server.collection:
 
 entity.crowd_server.edit_form:
   route_name: entity.crowd_server.edit_form
-  title: 'Add a server'
+  title: 'Edit server'
   weight: 20
   base_route: entity.crowd_server.edit_form
 

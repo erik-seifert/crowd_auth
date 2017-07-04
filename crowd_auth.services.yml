@@ -4,3 +4,7 @@ services:
   crowd.client:
     class: Drupal\crowd_auth\CrowdClientFactory
     arguments: ['@logger.factory']
+  crowd.event_subscriber:
+    class: \Drupal\crowd_auth\CrowdEventSubscriber
+    tags:
+      - { name: 'event_subscriber' }
