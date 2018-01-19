@@ -77,3 +77,32 @@ function crowd_auth_user_login_authenticate_validate($form, &$form_state) {
     }
   }
 }
+
+function crowd_auth_form_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $account = $form_state->getFormObject()->getEntity();
+  $authMap = \Drupal::service('externalauth.authmap')->getAuthData($account->id(), CROWD_AUTH_PROVIDER);
+  if (!$authMap) {
+    return;
+  }
+  $data = unserialize($authMap['data']);
+
+  $server = \Drupal::service('crowd.servers')->getServerById($data['server_id']);
+  if (!$server) {
+    return;
+  }
+
+  $form['account']['pass']['#access']
+    = $form['account']['current_pass']['#access']
+    = $form['account']['mail']['#access']
+    = $form['account']['name']['#access']
+    = FALSE;
+
+  foreach ($form['account']['roles']['#options'] as $roleId => $role) {
+    if ($role = $server->getMappingForLocalGroup($roleId)) {
+      $form['account']['roles'][$roleId] = [
+        '#default_value' => ($account->hasRole($role->id())) ? $roleId : 0,
+        '#disabled' => 1
+      ];
+    }
+  }
+}

@@ -58,7 +58,7 @@ class Server extends ConfigEntityBase {
      */
     public function connect() {
         $this->client = \Drupal::service('crowd.client')->get($this, ['debug' => false]);
-        return true;
+        return $this;
     }
 
     public function ping() {
@@ -108,6 +108,16 @@ class Server extends ConfigEntityBase {
         }
         return false;
     }
+
+    public function getMappingForLocalGroup($group) {
+      $maps = $this->get('group_mapping');
+      foreach ($maps as $key => $map) {
+          if ($map['group_drupal'] == $group) {
+              return Role::load($map['group_drupal']);
+          }
+      }
+      return false;
+  }
 
     /**
      * authenticate
