@@ -154,7 +154,6 @@ class Server extends ConfigEntityBase {
 
         $groups = $this->getUserGroups($username);
 
-
         foreach ($groups['groups'] as $group) {
             if ($role = $this->getMappingForGroup($group['name'])) {
                 $account->addRole($role->id());

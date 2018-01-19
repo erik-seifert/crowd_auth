@@ -36,7 +36,7 @@ class CrowdApiClient extends Client {
 
     private function getRequestUrl($module, $method) {
         $uri = $this->getConfig('base_uri');
-        return implode('/', [$module, $this->apiVersion, $method]);
+        return implode('/', ['rest', $module, $this->apiVersion, $method]);
     }
 
     private function getEncodedJson(Response $response) {
@@ -71,7 +71,7 @@ class CrowdApiClient extends Client {
         ];
         try {
             $response = $this->get($this->getRequestUrl('usermanagement', 'search'), $query);
-        } catch (ConnectException $e) {            
+        } catch (ConnectException $e) {
             throw new CrowdUserException(404);
         }
         if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
