@@ -34,9 +34,13 @@ class CrowdApiClient extends Client {
         throw new CrowdUserException($response->getStatusCode());
     }
 
-    private function getRequestUrl($module, $method) {
+    private function getRequestUrl($module, $method, $parameter = null) {
         $uri = $this->getConfig('base_uri');
-        return implode('/', ['rest', $module, $this->apiVersion, $method]);
+        $url = implode('/', ['rest', $module, $this->apiVersion, $method]);
+        if (is_array($parameter)) {
+          $url .= '/' . implode('/', $parameter);
+        }
+        return $url;
     }
 
     private function getEncodedJson(Response $response) {
@@ -61,6 +65,14 @@ class CrowdApiClient extends Client {
             return $this->getEncodedJson($response);
         }
         throw new CrowdUserException($response->getStatusCode());
+    }
+
+    function checkSsoToken($token) {
+      $response = $this->get($this->getRequestUrl('usermanagement', 'session', [$token]));
+      if ($response->getStatusCode() === CrowdApiClient::HTTP_SUCCESS) {
+        return $this->getEncodedJson($response);
+      }
+      throw new CrowdUserException($response->getStatusCode());
     }
 
     function search($type) {

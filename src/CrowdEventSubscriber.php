@@ -15,7 +15,7 @@ class CrowdEventSubscriber implements EventSubscriberInterface {
 
   /**
    * {@inheritdoc}
-   * 
+   *
    * @return array;
    */
   static function getSubscribedEvents() {
@@ -36,5 +36,11 @@ class CrowdEventSubscriber implements EventSubscriberInterface {
     }
     $request = \Drupal::service('request_stack')->getCurrentRequest();
     $cookies = $request->cookies->all();
+    $servers = \Drupal::service('crowd.servers')->getEnabledServers();
+    foreach ($servers as $server) {
+      if (isset($cookies[$server->get('crowd_cookie_name')])) {
+
+      }
+    }
   }
 }

@@ -58,3 +58,11 @@ entity.crowd_server.enable_disable_form:
     _permission: 'administer site configuration'
   options:
     _admin_route: TRUE
+
+crowd_auth.sso_controller:
+  path: '/crowd_auth/sso/{token}'
+  defaults:
+    _controller: '\Drupal\crowd_auth\Controller\SsoController::login'
+    _title: 'login'
+  requirements:
+    _role: 'anonymous'
